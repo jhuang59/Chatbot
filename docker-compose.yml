@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3.3'
 
 services:
   backend:
@@ -12,6 +12,8 @@ services:
       - LLM_PROVIDER=${LLM_PROVIDER:-openai}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
       - OPENAI_MODEL=${OPENAI_MODEL:-gpt-3.5-turbo}
+      - OPENROUTER_API_KEY=${OPENROUTER_API_KEY}
+      - OPENROUTER_MODEL=${OPENROUTER_MODEL}
       - DATABASE_URL=sqlite:///./chatbot.db
       - PYTHONUNBUFFERED=1
     volumes:
@@ -19,12 +21,6 @@ services:
       - ./chatbot_data:/app
     networks:
       - chatbot-network
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
 
   frontend:
     build:
@@ -36,16 +32,9 @@ services:
     environment:
       - REACT_APP_API_URL=http://backend:8000
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     networks:
       - chatbot-network
-    healthcheck:
-      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
 
 networks:
   chatbot-network:
