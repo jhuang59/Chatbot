@@ -149,29 +149,58 @@ Chatbot/
 
 ### Environment Variables
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root. You only need to configure one LLM provider:
 
+**Option 1: OpenAI**
 ```env
-# LLM Configuration
 LLM_PROVIDER=openai
-OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_API_KEY=sk-...
 OPENAI_MODEL=gpt-3.5-turbo
 
-# Database
 DATABASE_URL=sqlite:///./chatbot.db
+```
 
-# Server
-BACKEND_PORT=8000
-PYTHONUNBUFFERED=1
+**Option 2: OpenRouter**
+```env
+LLM_PROVIDER=openrouter
+OPENROUTER_API_KEY=sk-or-...
+OPENROUTER_MODEL=anthropic/claude-3-5-sonnet
+
+DATABASE_URL=sqlite:///./chatbot.db
 ```
 
 ### Supported LLM Providers
 
 Currently supported:
-- **OpenAI** (GPT-3.5-turbo, GPT-4)
+- **OpenAI** (GPT-3.5-turbo, GPT-4, etc.)
+- **OpenRouter** (150+ models from Anthropic, Mistral, Meta, Google, etc.)
+
+#### OpenAI Setup
+```env
+LLM_PROVIDER=openai
+OPENAI_API_KEY=sk-...
+OPENAI_MODEL=gpt-3.5-turbo
+```
+
+#### OpenRouter Setup
+OpenRouter is a unified API for many LLM providers. Great for cost comparison and accessing multiple models.
+```env
+LLM_PROVIDER=openrouter
+OPENROUTER_API_KEY=sk-or-...
+OPENROUTER_MODEL=anthropic/claude-3-5-sonnet
+```
+
+Popular OpenRouter models:
+- `anthropic/claude-3-5-sonnet` - Excellent reasoning
+- `openai/gpt-4` - Most capable
+- `mistral/mistral-7b` - Fast and cheap
+- `meta-llama/llama-2-70b-chat` - Open source
+- `google/palm-2-chat-bison` - Google's model
+
+Get API key: https://openrouter.io
 
 Easily extensible for:
-- **Anthropic Claude**
+- **Anthropic Claude (direct API)**
 - **Local Models (Ollama)**
 - **Other providers**
 
