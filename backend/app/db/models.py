@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Column, String, Text, DateTime, Integer
+from sqlalchemy import Column, String, Text, DateTime, Integer, ForeignKey
 from sqlalchemy.orm import relationship
 from . import Base
 
@@ -18,7 +18,7 @@ class Message(Base):
     __tablename__ = "messages"
 
     id = Column(Integer, primary_key=True, index=True)
-    conversation_id = Column(String, index=True)
+    conversation_id = Column(String, ForeignKey("conversations.id"), index=True)
     role = Column(String)  # "user" or "assistant"
     content = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
