@@ -50,7 +50,11 @@ class OpenAIProvider(LLMProvider):
 
 
 class OpenRouterProvider(LLMProvider):
-    """OpenRouter API provider - supports multiple LLM models through a unified API"""
+    """OpenRouter API provider - supports multiple LLM models through a unified API
+
+    Follows OpenRouter's LangChain integration template.
+    See: https://openrouter.ai/docs#integration-with-langchain
+    """
 
     def __init__(self):
         api_key = os.getenv("OPENROUTER_API_KEY")
@@ -59,13 +63,25 @@ class OpenRouterProvider(LLMProvider):
         if not api_key:
             raise ValueError("OPENROUTER_API_KEY environment variable is not set")
 
-        # OpenRouter uses OpenAI-compatible API
+        # OpenRouter uses OpenAI-compatible API with additional headers
+        # For site ranking on openrouter.ai (optional but recommended)
+        default_headers = {}
+
+        site_url = os.getenv("YOUR_SITE_URL")
+        if site_url:
+            default_headers["HTTP-Referer"] = site_url
+
+        site_name = os.getenv("YOUR_SITE_NAME")
+        if site_name:
+            default_headers["X-Title"] = site_name
+
         self.llm = ChatOpenAI(
             api_key=api_key,
             model=model,
-            base_url="https://openrouter.io/api/v1",
+            base_url="https://openrouter.ai/api/v1",
             temperature=0.7,
-            max_tokens=512
+            max_tokens=512,
+            default_headers=default_headers if default_headers else None
         )
 
     def validate_config(self) -> bool:
