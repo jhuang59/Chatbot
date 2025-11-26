@@ -1,5 +1,5 @@
 import os
-from typing import List, Dict
+from typing import List, Dict, Optional
 from langchain_openai import ChatOpenAI
 from . import LLMProvider
 
@@ -25,11 +25,25 @@ class OpenAIProvider(LLMProvider):
         """Check if OpenAI API key is configured"""
         return bool(os.getenv("OPENAI_API_KEY"))
 
-    def get_response(self, user_message: str, conversation_history: List[Dict[str, str]]) -> str:
+    def get_response(
+        self,
+        user_message: str,
+        conversation_history: List[Dict[str, str]],
+        system_prompt: Optional[str] = None
+    ) -> str:
         """Get response from OpenAI based on user message and conversation history"""
         try:
-            # Build message list from history
+            # Build message list with system prompt
             messages = []
+
+            # Add system prompt if provided
+            if system_prompt:
+                messages.append({
+                    "role": "system",
+                    "content": system_prompt
+                })
+
+            # Add conversation history
             for msg in conversation_history:
                 messages.append({
                     "role": msg["role"],
@@ -88,11 +102,25 @@ class OpenRouterProvider(LLMProvider):
         """Check if OpenRouter API key is configured"""
         return bool(os.getenv("OPENROUTER_API_KEY"))
 
-    def get_response(self, user_message: str, conversation_history: List[Dict[str, str]]) -> str:
+    def get_response(
+        self,
+        user_message: str,
+        conversation_history: List[Dict[str, str]],
+        system_prompt: Optional[str] = None
+    ) -> str:
         """Get response from OpenRouter based on user message and conversation history"""
         try:
-            # Build message list from history
+            # Build message list with system prompt
             messages = []
+
+            # Add system prompt if provided
+            if system_prompt:
+                messages.append({
+                    "role": "system",
+                    "content": system_prompt
+                })
+
+            # Add conversation history
             for msg in conversation_history:
                 messages.append({
                     "role": msg["role"],

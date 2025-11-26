@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 
 from ..db.models import Conversation, Message
 from ..llm.provider import get_llm_provider
+from ..prompts import get_system_prompt
 
 router = APIRouter(prefix="/api/chat", tags=["chat"])
 
@@ -150,9 +151,13 @@ def send_message(
             for msg in messages[:-1]  # Exclude the current message for context
         ]
 
+        # Get system prompt (from environment or use default)
+        system_prompt_name = os.getenv("CHATBOT_PROMPT", "default")
+        system_prompt = get_system_prompt(system_prompt_name)
+
         # Get LLM response
         llm_provider = get_llm_provider()
-        response_content = llm_provider.get_response(req.content, history)
+        response_content = llm_provider.get_response(req.content, history, system_prompt)
 
         # Store assistant message
         assistant_msg = Message(
